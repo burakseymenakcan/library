@@ -1,22 +1,22 @@
-# 📚 Kütüphane Yönetim Sistemi
+# Kütüphane Yönetim Sistemi
 
 Modern ve kullanıcı dostu kütüphane yönetim sistemi. NiceGUI ile geliştirilmiş, PostgreSQL veritabanı kullanan, Docker ile kolayca kurulabilen web uygulaması.
 
-## ✨ Özellikler
+## Özellikler
 
-- 👥 **Kullanıcı Yönetimi**: Kayıt, giriş, admin rolleri
-- 📖 **Kitap Yönetimi**: Ekleme, düzenleme, arama
-- 🔄 **Ödünç Alma**: Kitap ödünç alma/iade sistemi
-- 📊 **Admin Paneli**: Kullanıcı ve kitap yönetimi
-- 🔒 **Güvenlik**: Şifre hash'leme, SQL injection koruması
+-  **Kullanıcı Yönetimi**: Kayıt, giriş, admin rolleri
+-  **Kitap Yönetimi**: Ekleme, düzenleme, arama
+-  **Ödünç Alma**: Kitap ödünç alma/iade sistemi
+-  **Admin Paneli**: Kullanıcı ve kitap yönetimi
+-  **Güvenlik**: Şifre hash'leme, SQL injection koruması
 
-## 🛠️ Teknolojiler
+##  Teknolojiler
 
 - **Frontend & Backend**: NiceGUI (Python)
 - **Veritabanı**: PostgreSQL 16
 - **Containerization**: Docker & Docker Compose
 
-## 🚀 Hızlı Başlangıç
+##  Hızlı Başlangıç
 
 ### Kurulum
 
@@ -39,19 +39,19 @@ docker-compose up -d
 
 ## 📋 Kullanım
 
-### 👤 Normal Kullanıcı
+###  Normal Kullanıcı
 1. Kayıt olun veya giriş yapın
 2. Kitap kataloğunu görüntüleyin
 3. Kitap arayın ve ödünç alın
 4. Ödünç aldığınız kitapları takip edin
 
-### 👑 Admin Kullanıcı
+###  Admin Kullanıcı
 1. Admin hesabıyla giriş yapın
 2. Kullanıcı yönetimi yapın
 3. Yeni kitaplar ekleyin
 4. Ödünç alınanları takip edin
 
-## 🐳 Docker Komutları
+##  Docker Komutları
 
 ```bash
 # Başlat
@@ -67,7 +67,7 @@ docker-compose logs -f
 docker-compose up -d --build
 ```
 
-## 📁 Proje Yapısı
+##  Proje Yapısı
 
 ```
 library-management-system/
@@ -81,7 +81,7 @@ library-management-system/
 └── .dockerignore         # Docker ignore dosyası
 ```
 
-## 🔧 Yapılandırma
+##  Yapılandırma
 
 ### Environment Variables
 `.env` dosyası oluşturarak yapılandırmayı özelleştirebilirsiniz:
@@ -94,7 +94,7 @@ DB_PORT=5432
 APP_PORT=8080
 ```
 
-## 🚨 Sorun Giderme
+##  Sorun Giderme
 
 ### Container Başlamıyor
 ```bash
@@ -107,7 +107,7 @@ docker-compose down && docker-compose up -d
 APP_PORT=3000 docker-compose up -d
 ```
 
-## 🤝 Katkıda Bulunma
+##  Katkıda Bulunma
 
 1. Fork edin
 2. Feature branch oluşturun
