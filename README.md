@@ -37,7 +37,7 @@ docker-compose up -d
 - **Kullanıcı adı**: `admin`
 - **Şifre**: `admin`
 
-## 📋 Kullanım
+##  Kullanım
 
 ###  Normal Kullanıcı
 1. Kayıt olun veya giriş yapın
@@ -114,6 +114,6 @@ APP_PORT=3000 docker-compose up -d
 3. Değişikliklerinizi commit edin
 4. Pull Request oluşturun
 
-## 📄 Lisans
+##  Lisans
 
 GNU General Public License v3.0 (GPL-3.0)
