@@ -1,119 +1,134 @@
 # Kütüphane Yönetim Sistemi
 
-Modern ve kullanıcı dostu kütüphane yönetim sistemi. NiceGUI ile geliştirilmiş, PostgreSQL veritabanı kullanan, Docker ile kolayca kurulabilen web uygulaması.
+Bu proje, NiceGUI kullanarak geliştirilmiş modern bir kütüphane yönetim sistemidir.
 
-## Özellikler
+## 🔧 Özellikler
 
--  **Kullanıcı Yönetimi**: Kayıt, giriş, admin rolleri
--  **Kitap Yönetimi**: Ekleme, düzenleme, arama
--  **Ödünç Alma**: Kitap ödünç alma/iade sistemi
--  **Admin Paneli**: Kullanıcı ve kitap yönetimi
--  **Güvenlik**: Şifre hash'leme, SQL injection koruması
+- ✅ Kullanıcı kayıt ve giriş sistemi
+- ✅ Admin rolleri ve kullanıcı yönetimi (banlama, şifre değiştirme)
+- ✅ Kitap kataloğu yönetimi (ekleme, düzenleme, arama)
+- ✅ Kitap ödünç alma/iade sistemi
+- ✅ Admin paneli
+- ✅ Modern ve responsive UI
+- ✅ Güvenlik: Şifre hash'leme, temel SQL injection korumaları
 
-##  Teknolojiler
+## 🧰 Teknolojiler
 
 - **Frontend & Backend**: NiceGUI (Python)
 - **Veritabanı**: PostgreSQL 16
+- **Yönetim Aracı**: pgAdmin 4
 - **Containerization**: Docker & Docker Compose
 
-##  Hızlı Başlangıç
+## 🚀 Docker ile Çalıştırma
 
-### Kurulum
+### Gereksinimler
+- Docker
+- Docker Compose
 
-1. **Projeyi klonlayın:**
+### Kurulum ve Çalıştırma
+
+1. Projeyi klonlayın ve dizine gidin:
 ```bash
-git clone https://github.com/yourusername/library-management-system.git
-cd library-management-system
+cd library
 ```
 
-2. **Docker ile başlatın:**
+2. Kolay başlatma scripti ile servisleri başlatın:
 ```bash
-docker-compose up -d
+./start.sh start
 ```
 
-3. **Uygulamaya erişin:** http://localhost:8080
-
-### Varsayılan Giriş
-- **Kullanıcı adı**: `admin`
-- **Şifre**: `admin`
-
-##  Kullanım
-
-###  Normal Kullanıcı
-1. Kayıt olun veya giriş yapın
-2. Kitap kataloğunu görüntüleyin
-3. Kitap arayın ve ödünç alın
-4. Ödünç aldığınız kitapları takip edin
-
-###  Admin Kullanıcı
-1. Admin hesabıyla giriş yapın
-2. Kullanıcı yönetimi yapın
-3. Yeni kitaplar ekleyin
-4. Ödünç alınanları takip edin
-
-##  Docker Komutları
-
+3. Servislerin durumunu kontrol edin:
 ```bash
-# Başlat
-docker-compose up -d
-
-# Durdur
-docker-compose down
-
-# Logları görüntüle
-docker-compose logs -f
-
-# Yeniden build et
-docker-compose up -d --build
+./start.sh status
 ```
 
-##  Proje Yapısı
+### Erişim Bilgileri
 
-```
-library-management-system/
-├── README.md                 # Bu dosya
-├── nicegui_app.py           # Ana uygulama
-├── requirements.txt         # Python bağımlılıkları
-├── Dockerfile              # Docker yapılandırması
-├── docker-compose.yml      # Docker Compose yapılandırması
-├── start.sh               # Başlatma scripti
-├── init.sql              # Veritabanı başlatma
-└── .dockerignore         # Docker ignore dosyası
-```
+- 📚 Kütüphane Uygulaması: http://localhost:8080
+- 🗄️ pgAdmin (Veritabanı Yönetimi): http://localhost:5050
 
-##  Yapılandırma
+### pgAdmin Giriş Bilgileri
+- Email: `admin@admin.com`
+- Şifre: `admin`
 
-### Environment Variables
-`.env` dosyası oluşturarak yapılandırmayı özelleştirebilirsiniz:
+### pgAdmin'de Veritabanı Bağlantısı
+pgAdmin'e giriş yaptıktan sonra:
 
-```env
-DB_NAME=library
-DB_USER=postgres
-DB_PASSWORD=password
-DB_PORT=5432
-APP_PORT=8080
-```
+1. "Add New Server" butonuna tıklayın
+2. General sekmesinde: Name: `Library Database`
+3. Connection sekmesinde:
+   - Host: `postgres` (Docker service name)
+   - Port: `5432`
+   - Database: `library`
+   - Username: `postgres`
+   - Password: `password`
 
-##  Sorun Giderme
+### Uygulama Giriş Bilgileri
+- Admin Kullanıcı:
+  - Kullanıcı Adı: `admin`
+  - Şifre: `admin`
 
-### Container Başlamıyor
+## 🛠️ Geliştirme
+
+### Servisleri durdurma
 ```bash
-docker-compose logs
-docker-compose down && docker-compose up -d
+./start.sh stop
 ```
 
-### Port Çakışması
+### Logları görüntüleme
 ```bash
-APP_PORT=3000 docker-compose up -d
+./start.sh logs
 ```
 
-##  Katkıda Bulunma
+### Servisleri yeniden başlatma
+```bash
+./start.sh restart
+```
+
+### Veritabanını sıfırlama
+```bash
+docker-compose down -v
+./start.sh start
+```
+
+## 📁 Proje Yapısı
+
+```
+library/
+├── nicegui_app.py      # Ana uygulama dosyası
+├── Dockerfile          # Docker image tanımı
+├── docker-compose.yml  # Docker Compose konfigürasyonu
+├── requirements.txt    # Python bağımlılıkları
+└── README.md           # Bu dosya
+```
+
+## 🐛 Sorun Giderme
+
+### Uygulama başlamıyor
+```bash
+# Logları kontrol edin
+docker-compose logs app
+
+# Servisleri yeniden başlatın
+docker-compose restart
+```
+
+### Veritabanı bağlantı sorunu
+```bash
+# PostgreSQL servisinin durumunu kontrol edin
+docker-compose logs postgres
+
+# Veritabanını yeniden başlatın
+docker-compose restart postgres
+```
+
+## 🤝 Katkıda Bulunma
 
 1. Fork edin
 2. Feature branch oluşturun
 3. Değişikliklerinizi commit edin
 4. Pull Request oluşturun
 
-##  Lisans
+## 🪪 Lisans
 
 GNU General Public License v3.0 (GPL-3.0)
