@@ -1,2 +1,4 @@
 nicegui==1.4.21
 psycopg2-binary==2.9.9
+SQLAlchemy==2.0.32
+alembic==1.13.2

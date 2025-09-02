@@ -91,6 +91,26 @@ docker-compose down -v
 ./start.sh start
 ```
 
+### Alembic Migration (Şema Yönetimi)
+
+1. İlk kurulumu çalıştırın (container'lar ayakta olsun):
+```bash
+./start.sh start
+```
+
+2. Migration'ları veritabanına uygula:
+```bash
+alembic upgrade head
+```
+
+3. Yeni bir değişiklik eklerken (ör. yeni sütun):
+```bash
+# Elle migration oluştur (autogenerate kapalı)
+alembic revision -m "add new column to books"
+# oluşturulan dosyada upgrade/downgrade yaz
+alembic upgrade head
+```
+
 ##  Proje Yapısı
 
 ```
