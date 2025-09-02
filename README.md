@@ -2,24 +2,24 @@
 
 Bu proje, NiceGUI kullanarak geliştirilmiş modern bir kütüphane yönetim sistemidir.
 
-## 🔧 Özellikler
+##  Özellikler
 
-- ✅ Kullanıcı kayıt ve giriş sistemi
-- ✅ Admin rolleri ve kullanıcı yönetimi (banlama, şifre değiştirme)
-- ✅ Kitap kataloğu yönetimi (ekleme, düzenleme, arama)
-- ✅ Kitap ödünç alma/iade sistemi
-- ✅ Admin paneli
-- ✅ Modern ve responsive UI
-- ✅ Güvenlik: Şifre hash'leme, temel SQL injection korumaları
+-  Kullanıcı kayıt ve giriş sistemi
+-  Admin rolleri ve kullanıcı yönetimi (banlama, şifre değiştirme)
+-  Kitap kataloğu yönetimi (ekleme, düzenleme, arama)
+-  Kitap ödünç alma/iade sistemi
+-  Admin paneli
+-  Modern ve responsive UI
+-  Güvenlik: Şifre hash'leme, temel SQL injection korumaları
 
-## 🧰 Teknolojiler
+##  Teknolojiler
 
 - **Frontend & Backend**: NiceGUI (Python)
 - **Veritabanı**: PostgreSQL 16
 - **Yönetim Aracı**: pgAdmin 4
 - **Containerization**: Docker & Docker Compose
 
-## 🚀 Docker ile Çalıştırma
+##  Docker ile Çalıştırma
 
 ### Gereksinimler
 - Docker
@@ -44,8 +44,8 @@ cd library
 
 ### Erişim Bilgileri
 
-- 📚 Kütüphane Uygulaması: http://localhost:8080
-- 🗄️ pgAdmin (Veritabanı Yönetimi): http://localhost:5050
+-  Kütüphane Uygulaması: http://localhost:8080
+-  pgAdmin (Veritabanı Yönetimi): http://localhost:5050
 
 ### pgAdmin Giriş Bilgileri
 - Email: `admin@admin.com`
@@ -91,7 +91,7 @@ docker-compose down -v
 ./start.sh start
 ```
 
-## 📁 Proje Yapısı
+##  Proje Yapısı
 
 ```
 library/
@@ -102,7 +102,7 @@ library/
 └── README.md           # Bu dosya
 ```
 
-## 🐛 Sorun Giderme
+##  Sorun Giderme
 
 ### Uygulama başlamıyor
 ```bash
@@ -122,13 +122,13 @@ docker-compose logs postgres
 docker-compose restart postgres
 ```
 
-## 🤝 Katkıda Bulunma
+##  Katkıda Bulunma
 
 1. Fork edin
 2. Feature branch oluşturun
 3. Değişikliklerinizi commit edin
 4. Pull Request oluşturun
 
-## 🪪 Lisans
+##  Lisans
 
 GNU General Public License v3.0 (GPL-3.0)
