@@ -68,7 +68,7 @@ pgAdmin'e giriş yaptıktan sonra:
   - Kullanıcı Adı: `admin`
   - Şifre: `admin`
 
-## 🛠️ Geliştirme
+##  Geliştirme
 
 ### Servisleri durdurma
 ```bash
