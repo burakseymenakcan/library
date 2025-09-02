@@ -4,43 +4,30 @@ FROM python:3.11-slim
 # Çalışma dizinini ayarla
 WORKDIR /app
 
-# Sistem bağımlılıklarını yükle
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
     gcc \
-    postgresql-client \
-    curl \
-    && rm -rf /var/lib/apt/lists/* \
-    && apt-get clean
+    && rm -rf /var/lib/apt/lists/*
 
-# Python bağımlılıklarını kopyala ve yükle
+# Copy requirements first for better caching
 COPY requirements.txt .
+
+# Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Uygulama kodunu kopyala
-COPY nicegui_app.py .
-COPY start.sh .
+# Copy application code
+COPY . .
 
-# Script'i çalıştırılabilir yap
-RUN chmod +x start.sh
-
-# Non-root user oluştur (güvenlik için)
-RUN useradd --create-home --shell /bin/bash app \
-    && chown -R app:app /app
-USER app
-
-# Port 8080'i aç
+# Expose port
 EXPOSE 8080
 
-# Environment variables (default values)
-ENV DB_HOST=postgres
-ENV DB_PORT=5432
-ENV DB_NAME=library
-ENV DB_USER=postgres
-ENV DB_PASSWORD=password
+# Add signal handling for graceful shutdown
+RUN echo '#!/bin/bash\n\
+echo "🛑 Shutting down gracefully..."\n\
+python nicegui_app.py &\n\
+PID=$!\n\
+trap "echo \"🔄 Stopping application...\"; kill $PID; wait $PID; echo \"✅ Application stopped\"; exit 0" SIGTERM SIGINT\n\
+wait $PID' > /app/start.sh && chmod +x /app/start.sh
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
-    CMD curl -f http://localhost:8080 || exit 1
-
-# Uygulamayı çalıştır
-CMD ["./start.sh"]
+# Run the application with graceful shutdown
+CMD ["/app/start.sh"]

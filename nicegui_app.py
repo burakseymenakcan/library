@@ -37,17 +37,8 @@ def init_db():
             )
         ''')
         
-        # Add is_banned column if it doesn't exist
-        try:
-            cursor.execute('ALTER TABLE users ADD COLUMN is_banned BOOLEAN DEFAULT FALSE')
-            conn.commit()
-            print("✅ is_banned sütunu eklendi")
-        except psycopg2.errors.DuplicateColumn:
-            conn.rollback()
-            print("ℹ️ is_banned sütunu zaten mevcut")
-        except Exception as e:
-            conn.rollback()
-            print(f"ℹ️ is_banned sütunu kontrol edildi: {e}")
+        # is_banned sütunu zaten tabloda tanımlı olduğu için kontrol etmeye gerek yok
+        print("ℹ️ is_banned sütunu tabloda tanımlı")
         
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS books (
@@ -91,6 +82,9 @@ def init_db():
         conn.commit()
         conn.close()
         print("✅ PostgreSQL veritabanı başarıyla başlatıldı!")
+        
+        # Kitap verilerini ekle
+        add_sample_books()
         
     except psycopg2.OperationalError as e:
         print(f"❌ PostgreSQL bağlantı hatası: {e}")
@@ -141,9 +135,6 @@ def get_db():
 # Global variables
 current_user = None
 is_admin = False
-
-# Initialize database
-init_db()
 
 # Hash all existing passwords
 def hash_all_passwords():
@@ -196,7 +187,111 @@ def hash_all_passwords():
     except Exception as e:
         print(f"❌ Şifre hash'leme hatası: {e}")
 
-# Hash all passwords on startup
+def add_sample_books():
+    """Örnek kitap verilerini ekler"""
+    try:
+        conn = get_db()
+        cursor = conn.cursor(cursor_factory=RealDictCursor)
+        
+        # Mevcut kitap sayısını kontrol et
+        cursor.execute('SELECT COUNT(*) FROM books')
+        book_count = cursor.fetchone()['count']
+        
+        if book_count > 0:
+            print(f"ℹ️ Zaten {book_count} kitap mevcut, örnek veriler eklenmedi.")
+            conn.close()
+            return
+        
+        # Örnek kitaplar
+        sample_books = [
+            {
+                'title': 'Suç ve Ceza',
+                'author': 'Fyodor Dostoyevski',
+                'description': 'Psikolojik gerilim romanı, suç ve vicdan temalarını işler.',
+                'published_year': 1866,
+                'isbn': '978-975-0719-01-2',
+                'category': 'Roman',
+                'cover_url': 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400',
+                'total_copies': 3,
+                'available_copies': 3
+            },
+            {
+                'title': '1984',
+                'author': 'George Orwell',
+                'description': 'Distopik roman, totaliter rejimlerin tehlikelerini gösterir.',
+                'published_year': 1949,
+                'isbn': '978-975-0719-02-9',
+                'category': 'Distopik',
+                'cover_url': 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=400',
+                'total_copies': 2,
+                'available_copies': 2
+            },
+            {
+                'title': 'Küçük Prens',
+                'author': 'Antoine de Saint-Exupéry',
+                'description': 'Çocuklar için yazılmış ama her yaşa hitap eden felsefi masal.',
+                'published_year': 1943,
+                'isbn': '978-975-0719-03-6',
+                'category': 'Çocuk',
+                'cover_url': 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400',
+                'total_copies': 5,
+                'available_copies': 5
+            },
+            {
+                'title': 'Dönüşüm',
+                'author': 'Franz Kafka',
+                'description': 'Varoluşçu roman, insanın yabancılaşmasını konu alır.',
+                'published_year': 1915,
+                'isbn': '978-975-0719-04-3',
+                'category': 'Roman',
+                'cover_url': 'https://images.unsplash.com/photo-1512820790803-83ca734da794?w=400',
+                'total_copies': 2,
+                'available_copies': 2
+            },
+            {
+                'title': 'Fareler ve İnsanlar',
+                'author': 'John Steinbeck',
+                'description': 'Büyük Buhran döneminde geçen dostluk hikayesi.',
+                'published_year': 1937,
+                'isbn': '978-975-0719-05-0',
+                'category': 'Roman',
+                'cover_url': 'https://images.unsplash.com/photo-1516979187457-637abb4f9353?w=400',
+                'total_copies': 3,
+                'available_copies': 3
+            },
+            {
+                'title': 'Şeker Portakalı',
+                'author': 'José Mauro de Vasconcelos',
+                'description': 'Çocukluğun masumiyetini ve hayal gücünü anlatan roman.',
+                'published_year': 1968,
+                'isbn': '978-975-0719-06-7',
+                'category': 'Roman',
+                'cover_url': 'https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=400',
+                'total_copies': 4,
+                'available_copies': 4
+            }
+        ]
+        
+        # Kitapları veritabanına ekle
+        for book in sample_books:
+            cursor.execute('''
+                INSERT INTO books (title, author, description, published_year, isbn, category, cover_url, total_copies, available_copies)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+            ''', (book['title'], book['author'], book['description'], book['published_year'], 
+                  book['isbn'], book['category'], book['cover_url'], book['total_copies'], book['available_copies']))
+        
+        conn.commit()
+        conn.close()
+        print(f"✅ {len(sample_books)} örnek kitap eklendi!")
+        
+    except Exception as e:
+        print(f"❌ Örnek kitap ekleme hatası: {e}")
+
+# Initialize database and hash passwords
+print("🚀 Kütüphane Yönetim Sistemi başlatılıyor...")
+print("📊 PostgreSQL bağlantısı bekleniyor...")
+init_db()
+print("🌐 NiceGUI uygulaması başlatılıyor...")
 hash_all_passwords()
 
 # Custom CSS for modern design
@@ -414,56 +509,73 @@ def login_page():
         password = ui.input('🔒 Şifre', password=True).classes('w-full modern-input q-mb-md')
         
         def login():
-            global current_user, is_admin
-            conn = get_db()
-            cursor = conn.cursor(cursor_factory=RealDictCursor)
-            cursor.execute('SELECT id, username, password_hash, is_staff, is_banned FROM users WHERE username = %s', (username.value,))
-            row = cursor.fetchone()
-            conn.close()
-            
-            # Şifreyi hash'le ve karşılaştır
-            import hashlib
-            password_hash = hashlib.sha256(password.value.encode()).hexdigest()
-            
-            # Hem dict hem tuple sonuçlar için uyum
-            if row:
-                if isinstance(row, dict):
-                    user = row
-                else:
-                    user = {
-                        'id': row[0],
-                        'username': row[1],
-                        'password_hash': row[2],
-                        'is_staff': row[3],
-                        'is_banned': row[4] if len(row) > 4 else False,
-                    }
-            else:
-                user = None
-
-            if user and user['password_hash'] == password_hash:
-                # Check if user is banned
-                if user['is_banned'] if 'is_banned' in user.keys() else False:
-                    ui.notify('🚫 Hesabınız banlanmış! Lütfen yönetici ile iletişime geçin.', type='negative')
+            try:
+                print(f"🔍 Login attempt for user: {username.value}")
+                global current_user, is_admin
+                
+                if not username.value or not password.value:
+                    ui.notify('❌ Kullanıcı adı ve şifre gerekli!', type='negative')
                     return
                 
-                current_user = user
-                is_admin = user['is_staff']
-                ui.notify('🎉 Giriş başarılı!', type='positive')
-                ui.navigate.to('/dashboard')
-            else:
-                ui.notify('❌ Geçersiz kullanıcı adı veya şifre', type='negative')
+                conn = get_db()
+                cursor = conn.cursor(cursor_factory=RealDictCursor)
+                cursor.execute('SELECT id, username, password_hash, is_staff, is_banned FROM users WHERE username = %s', (username.value,))
+                row = cursor.fetchone()
+                conn.close()
+                
+                # Şifreyi hash'le ve karşılaştır
+                import hashlib
+                password_hash = hashlib.sha256(password.value.encode()).hexdigest()
+                
+                print(f"🔐 Password hash: {password_hash[:20]}...")
+                
+                # Hem dict hem tuple sonuçlar için uyum
+                if row:
+                    if isinstance(row, dict):
+                        user = row
+                    else:
+                        user = {
+                            'id': row[0],
+                            'username': row[1],
+                            'password_hash': row[2],
+                            'is_staff': row[3],
+                            'is_banned': row[4] if len(row) > 4 else False,
+                        }
+                    print(f"👤 User found: {user['username']}")
+                else:
+                    user = None
+                    print("❌ User not found")
+
+                if user and user['password_hash'] == password_hash:
+                    # Check if user is banned
+                    if user['is_banned'] if 'is_banned' in user.keys() else False:
+                        ui.notify('🚫 Hesabınız banlanmış! Lütfen yönetici ile iletişime geçin.', type='negative')
+                        return
+                    
+                    current_user = user
+                    is_admin = user['is_staff']
+                    print(f"✅ Login successful for {user['username']}")
+                    ui.notify('🎉 Giriş başarılı!', type='positive')
+                    ui.navigate.to('/dashboard')
+                else:
+                    print("❌ Invalid credentials")
+                    ui.notify('❌ Geçersiz kullanıcı adı veya şifre', type='negative')
+            except Exception as e:
+                print(f"❌ Login error: {e}")
+                ui.notify(f'❌ Giriş hatası: {str(e)}', type='negative')
         
+        # Login button
+        login_btn = ui.button('🚀 GİRİŞ YAP', on_click=login).classes('w-full modern-button q-mb-md pulse')
+        
+        # Register button
+        ui.button('📝 Kayıt Ol', on_click=lambda: ui.navigate.to('/register')).classes('w-full modern-button bg-green')
+        
+        # Add Enter key support using NiceGUI's built-in method
         def handle_enter():
             login()
         
-        # Add Enter key support
         username.on('keydown.enter', handle_enter)
         password.on('keydown.enter', handle_enter)
-        
-        ui.button('🚀 GİRİŞ YAP', on_click=login).classes('w-full modern-button q-mt-md pulse')
-        
-        with ui.row().classes('w-full justify-center q-mt-md'):
-            ui.button('📝 Kayıt Ol', on_click=lambda: ui.navigate.to('/register')).classes('modern-button bg-green')
 
 # Register page
 @ui.page('/register')
@@ -502,14 +614,11 @@ def register_page():
                 conn.close()
                 ui.notify('❌ Bu kullanıcı adı veya email zaten kullanılıyor!', type='negative')
         
-        def handle_enter():
-            register()
-        
         # Add Enter key support
-        username.on('keydown.enter', handle_enter)
-        email.on('keydown.enter', handle_enter)
-        password.on('keydown.enter', handle_enter)
-        password2.on('keydown.enter', handle_enter)
+        username.on('keydown.enter', register)
+        email.on('keydown.enter', register)
+        password.on('keydown.enter', register)
+        password2.on('keydown.enter', register)
         
         ui.button('✅ Kayıt Ol', on_click=register).classes('w-full modern-button q-mt-md')
         
@@ -1149,5 +1258,10 @@ if __name__ == '__main__':
         port=8080,
         host='0.0.0.0',  # Docker için tüm interface'leri dinle
         reload=False,
-        show=False  # Docker'da GUI gösterme
+        show=False,  # Docker'da GUI gösterme
+        websocket_ping_interval=30,  # WebSocket ping aralığı
+        websocket_ping_timeout=10,   # WebSocket ping timeout
+        favicon='📚',  # Favicon
+        dark=False,  # Light mode
+        storage_secret='library_secret_key_2024'  # Session storage secret
     )

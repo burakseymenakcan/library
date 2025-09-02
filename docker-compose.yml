@@ -3,26 +3,44 @@ version: '3.8'
 services:
   # PostgreSQL Database
   postgres:
-    image: postgres:16-alpine
+    image: postgres:15
     container_name: library_postgres
     environment:
-      POSTGRES_DB: ${DB_NAME:-library}
-      POSTGRES_USER: ${DB_USER:-postgres}
-      POSTGRES_PASSWORD: ${DB_PASSWORD:-password}
+      POSTGRES_DB: library
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
-    ports:
-      - "${DB_PORT:-5432}:5432"
     networks:
       - library_network
-    restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-postgres} -d ${DB_NAME:-library}"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 10s
+      test: ["CMD-SHELL", "pg_isready -U postgres -d library"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: "no"
+    stop_grace_period: 30s
+
+  # pgAdmin for database management
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: library_pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    ports:
+      - "5050:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    networks:
+      - library_network
+    depends_on:
+      - postgres
+    restart: "no"
+    stop_grace_period: 10s
 
   # NiceGUI Application
   app:
@@ -31,29 +49,22 @@ services:
     environment:
       DB_HOST: postgres
       DB_PORT: 5432
-      DB_NAME: ${DB_NAME:-library}
-      DB_USER: ${DB_USER:-postgres}
-      DB_PASSWORD: ${DB_PASSWORD:-password}
+      DB_NAME: library
+      DB_USER: postgres
+      DB_PASSWORD: password
     ports:
-      - "${APP_PORT:-8080}:8080"
+      - "8080:8080"
+    networks:
+      - library_network
     depends_on:
       postgres:
         condition: service_healthy
-    networks:
-      - library_network
-    restart: unless-stopped
-    volumes:
-      - ./nicegui_app.py:/app/nicegui_app.py
-      - ./requirements.txt:/app/requirements.txt
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 30s
+    restart: "no"
+    stop_grace_period: 10s
 
 volumes:
   postgres_data:
+  pgadmin_data:
 
 networks:
   library_network:

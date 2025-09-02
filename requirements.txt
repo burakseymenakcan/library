@@ -1,2 +1,2 @@
-nicegui>=1.4.0
-psycopg2-binary>=2.9.0
+nicegui==1.4.21
+psycopg2-binary==2.9.9
